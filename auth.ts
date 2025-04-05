@@ -112,116 +112,114 @@ import { SignInSchema } from "./lib/validations";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    GitHub,
-    Google,
+    GitHub({
+      clientId: process.env.AUTH_GITHUB_ID!,
+      clientSecret: process.env.AUTH_GITHUB_SECRET!,
+      authorization: {
+        params: {
+          scope: "read:user user:email",
+        },
+      },
+    }),
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID!,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+    }),
     Credentials({
       async authorize(credentials) {
-        try {
-          const validatedFields = SignInSchema.safeParse(credentials);
+        const validatedFields = SignInSchema.safeParse(credentials);
+        if (!validatedFields.success) return null;
 
-          if (!validatedFields.success) {
-            console.warn("⚠️ Validation failed:", validatedFields.error);
-            return null;
-          }
+        const { email, password } = validatedFields.data;
 
-          const { email, password } = validatedFields.data;
+        const existingAccount = await Account.findOne({
+          providerAccountId: email,
+        });
 
-          const existingAccount = await Account.findOne({
-            providerAccountId: email,
-          });
+        if (!existingAccount) return null;
 
-          if (!existingAccount) {
-            console.warn("⚠️ Account not found for email:", email);
-            return null;
-          }
+        const { data: existingUser } = (await api.users.getById(
+          existingAccount.userId.toString()
+        )) as ActionResponse<IUserDoc>;
 
-          const { data: existingUser } = (await api.users.getById(
-            existingAccount.userId.toString()
-          )) as ActionResponse<IUserDoc>;
+        if (!existingUser) return null;
 
-          if (!existingUser) {
-            console.warn("⚠️ User not found for ID:", existingAccount.userId);
-            return null;
-          }
+        const isValidPassword = await bcrypt.compare(
+          password,
+          existingAccount.password!
+        );
 
-          const isValidPassword = await bcrypt.compare(
-            password,
-            existingAccount.password!
-          );
+        if (!isValidPassword) return null;
 
-          if (!isValidPassword) {
-            console.warn("⚠️ Invalid password for email:", email);
-            return null;
-          }
-
-          return {
-            id: existingUser.id,
-            name: existingUser.name,
-            email: existingUser.email,
-            image: existingUser.image,
-          };
-        } catch (error) {
-          console.error("❌ authorize() error:", error);
-          return null;
-        }
+        return {
+          id: existingUser.id,
+          name: existingUser.name,
+          email: existingUser.email,
+          image: existingUser.image,
+        };
       },
     }),
   ],
-  secret: process.env.AUTH_SECRET,
+
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub as string;
       return session;
     },
+
     async jwt({ token, account }) {
-      try {
-        if (account) {
-          const { data: existingAccount, success } =
-            (await api.accounts.getByProvider(
-              account.type === "credentials"
-                ? token.email!
-                : account.providerAccountId
-            )) as ActionResponse<IAccountDoc>;
+      if (account) {
+        const { data: existingAccount, success } =
+          (await api.accounts.getByProvider(
+            account.type === "credentials"
+              ? token.email!
+              : account.providerAccountId
+          )) as ActionResponse<IAccountDoc>;
 
-          if (!success || !existingAccount) return token;
+        if (!success || !existingAccount) return token;
 
-          const userId = existingAccount.userId;
-
-          if (userId) token.sub = userId.toString();
-        }
-
-        return token;
-      } catch (err) {
-        console.error("❌ jwt() error:", err);
-        return token;
+        const userId = existingAccount.userId;
+        if (userId) token.sub = userId.toString();
       }
+
+      return token;
     },
+
     async signIn({ user, profile, account }) {
       if (account?.type === "credentials") return true;
       if (!account || !user) return false;
 
-      try {
-        const userInfo = {
-          name: user.name!,
-          email: user.email!,
-          image: user.image!,
-          username:
-            account.provider === "github"
-              ? (profile?.login as string)
-              : (user.name?.toLowerCase() as string),
-        };
+      // Handle missing email edge case
+      if (!user.email) {
+        console.warn("OAuth sign-in failed: no user email found");
+        return false;
+      }
+      const userInfo = {
+        name: user.name || profile?.name || "No Name",
+        email: user.email!,
+        image: user.image ?? (profile?.avatar_url as string) ?? "",
+        username:
+          account.provider === "github"
+            ? (profile?.login as string)
+            : user.name?.toLowerCase() || "unknown",
+      };
 
-        const { success } = (await api.auth.oAuthSignIn({
+      try {
+        const response = await api.auth.oAuthSignIn({
           user: userInfo,
           provider: account.provider as "github" | "google",
           providerAccountId: account.providerAccountId,
-        })) as ActionResponse;
+        });
 
-        return success;
+        console.log("OAuth sign-in response:", response);
+
+        return response.success;
       } catch (err) {
-        console.error("❌ signIn() error:", err);
+        console.error("OAuth sign-in failed:", err);
         return false;
       }
     },
   },
+
+  secret: process.env.AUTH_SECRET,
 });
