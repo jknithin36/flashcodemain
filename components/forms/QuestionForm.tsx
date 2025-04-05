@@ -1,4 +1,3 @@
-//2
 "use client";
 
 import * as Tooltip from "@radix-ui/react-tooltip";
@@ -96,6 +95,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
   ) => {
     startTransition(async () => {
       if (isEdit && question) {
+        // @ts-ignore
         const result = await editQuestion({
           questionId: question?._id,
           ...data,
