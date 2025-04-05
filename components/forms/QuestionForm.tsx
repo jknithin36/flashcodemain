@@ -95,7 +95,6 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
   ) => {
     startTransition(async () => {
       if (isEdit && question) {
-        // @ts-ignore
         const result = await editQuestion({
           questionId: question?._id,
           ...data,
@@ -107,6 +106,7 @@ const QuestionForm = ({ question, isEdit = false }: Params) => {
             description: "Question updated successfully",
           });
 
+          // @ts-ignore
           if (result.data) router.push(ROUTES.QUESTION(result.data._id));
         } else {
           toast({
