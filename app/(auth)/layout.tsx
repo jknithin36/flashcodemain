@@ -48,11 +48,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             )}
           </div>
 
-          {/* <div className="flex items-center justify-center space-x-1">
-            <div className="h-px bg-gray-600 w-full" />
-            <span className="text-xs text-gray-400">Or continue with</span>
-            <div className="h-px bg-gray-600 w-full" />
-          </div> */}
           <div className="flex items-center w-full space-x-4">
             <div className="h-px bg-gray-600 w-full" />
             <span className="whitespace-nowrap text-xs text-gray-400">
@@ -77,20 +72,20 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="hidden md:flex w-1/2 bg-neutral-950 text-white items-center justify-center p-10">
         <div className="text-center space-y-4 max-w-sm">
           <div className="flex justify-center -space-x-2">
-            {Array.from({ length: 6 }).map((_, idx) => (
+            {[1, 2, 3, 4, 5, 6].map((num) => (
               <Image
-                key={idx}
-                src={`https://i.pravatar.cc/40?img=${idx + 1}`}
+                key={num}
+                src={`/images/user-${num}.jpg`}
                 width={40}
                 height={40}
-                alt="user"
+                alt={`user-${num}`}
                 className="rounded-full border-2 border-neutral-800"
               />
             ))}
           </div>
           <h3 className="text-lg font-semibold">Flashes love us</h3>
           <p className="text-sm text-gray-400">
-            loved by thousands of developers across the kent State univeristy.
+            Loved by thousands of developers across the Kent State University.
             Be part of the community and join us.
           </p>
         </div>
