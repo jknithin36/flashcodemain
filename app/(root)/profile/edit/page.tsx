@@ -95,7 +95,9 @@ const EditProfilePage = () => {
           onChange={handleChange}
           placeholder="We don't have any info about your portfolio"
         />
-        <Button type="submit">Save Changes</Button>
+        <Button type="submit" className="primary-gradient2 ">
+          Save Changes
+        </Button>
       </form>
     </div>
   );
