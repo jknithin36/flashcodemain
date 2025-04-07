@@ -1,7 +1,9 @@
+// /app/api/kent/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongoose";
 import Magazine from "@/database/magazine.model";
 import ImportantDate from "@/database/importantDate.model";
+import Event from "@/database/event.model"; // ✅ add event model
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -25,6 +27,11 @@ export async function GET(req: NextRequest) {
       };
 
       return NextResponse.json(semesterWise);
+    }
+
+    if (type === "events") {
+      const events = await Event.find().sort({ date: 1 }); // sorted by upcoming
+      return NextResponse.json({ events });
     }
 
     return NextResponse.json(

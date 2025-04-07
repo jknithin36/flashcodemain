@@ -1,8 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import EventCard from "@/components/cards/EventCard"; // Import the updated EventCard component
-import { Button } from "@/components/ui/button"; // Import ShadCN Button
+import EventCard from "@/components/cards/EventCard";
 
 interface Event {
   title: string;
@@ -17,23 +16,25 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+
   useEffect(() => {
-    fetch("https://serverflash.onrender.com/events") // Fetch from Flask API
-      .then((res) => res.json())
-      .then((data) => {
-        setEvents(data);
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch("/api/kent?type=events");
+        const data = await res.json();
+        setEvents(data.events || []);
+      } catch (err) {
+        setError("Failed to fetch events.");
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   return (
     <div className="p-6">
-      {/* Header with "Add Event" Button */}
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-2xl font-bold text-black dark:text-white">
           🎟️ Upcoming Events & Hackathons
@@ -54,7 +55,7 @@ export default function EventsPage() {
               title={event.title}
               date={event.date}
               description={event.description}
-              location={event.location || "Online"} // Default if location is missing
+              location={event.location || "Online"}
               link={event.link}
               time={event.time}
             />
