@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import SocialAuthForm from "@/components/forms/SocialAuthForm";
+import Link from "next/link";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -11,22 +12,23 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
   return (
     <main className="flex min-h-screen">
-      {/* Left Side - Auth Form */}
       <div className="w-full md:w-1/2 bg-black text-white flex flex-col justify-center items-center px-8 py-12 space-y-6">
-        {/* Logo */}
-        <div className="flex items-center space-x-2 mb-4">
-          <Image src="/flash_logo.png" alt="Logo" width={28} height={28} />
-          <span className="text-lg font-semibold">FlashCode</span>
+        <div className="flex flex-col items-center space-y-1 mb-4">
+          <div className="flex items-center space-x-2">
+            <Image src="/flash_logo.png" alt="Logo" width={28} height={28} />
+            <span className="text-lg font-semibold">FlashCode</span>
+          </div>
+          <span className="text-xs text-gray-400">
+            Smart minds. Fast answers. Zero judgment.
+          </span>
         </div>
 
-        {/* Heading */}
         <div className="w-full max-w-sm space-y-2">
           <h2 className="text-2xl font-bold">
             {isSignIn ? "Sign in to your account" : "Sign up for an account"}
           </h2>
         </div>
 
-        {/* Form Fields */}
         <div className="w-full max-w-sm space-y-6">
           {children}
 
@@ -34,16 +36,16 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             {isSignIn ? (
               <>
                 Don&apos;t have an account?{" "}
-                <a href="/sign-up" className="underline">
+                <Link href="/sign-up" className="underline">
                   Sign up
-                </a>
+                </Link>
               </>
             ) : (
               <>
                 Already have an account?{" "}
-                <a href="/sign-in" className="underline">
+                <Link href="/sign-in" className="underline">
                   Sign in
-                </a>
+                </Link>
               </>
             )}
           </div>
@@ -60,34 +62,56 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
           <p className="text-xs text-muted-foreground text-center">
             All rights reserved and{" "}
-            <a href="/" className="underline">
+            <Link href="/" className="underline">
               Flashcode{" "}
-            </a>
+            </Link>
             .
           </p>
         </div>
       </div>
 
-      {/* Right Side - Testimonial Section */}
       <div className="hidden md:flex w-1/2 bg-neutral-950 text-white items-center justify-center p-10">
         <div className="text-center space-y-4 max-w-sm">
           <div className="flex justify-center -space-x-2">
-            {[1, 2, 3, 4, 5, 6].map((num) => (
+            {Array.from({ length: 6 }).map((_, idx) => (
               <Image
-                key={num}
-                src={`/images/user-${num}.jpg`}
+                key={idx}
+                src={`https://i.pravatar.cc/40?img=${idx + 1}`}
                 width={40}
                 height={40}
-                alt={`user-${num}`}
+                alt="user"
                 className="rounded-full border-2 border-neutral-800"
               />
             ))}
           </div>
           <h3 className="text-lg font-semibold">Flashes love us</h3>
-          <p className="text-sm text-gray-400">
-            Loved by thousands of developers across the Kent State University.
-            Be part of the community and join us.
-          </p>
+
+          <div className="flex flex-col items-center space-y-5 pt-5 border-t border-neutral-800">
+            <div className="flex flex-col items-center space-y-2">
+              <p className="text-sm text-gray-300 italic max-w-xs text-center">
+                “FlashCode changed how I tackle problems. It’s fast, friendly,
+                and actually fun.”
+              </p>
+              <p className="text-xs text-gray-500">— Nithin</p>
+            </div>
+
+            <div className="flex flex-col items-center space-y-2">
+              <p className="text-sm text-gray-300 italic max-w-xs text-center">
+                “Feels like a campus hackathon every day—collaborative, fast,
+                and full of energy!”
+              </p>
+              <p className="text-xs text-gray-500">— Rohith</p>
+            </div>
+
+            <p className="text-sm text-gray-400">
+              loved by thousands of developers across the <br />
+              <span className="text-sm font-semibold italic">
+                kent State univeristy
+              </span>
+              <br />
+              Be part of the community and join us.
+            </p>
+          </div>
         </div>
       </div>
     </main>

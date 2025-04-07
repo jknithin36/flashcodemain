@@ -31,7 +31,7 @@ const playfairDisplay = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "FlashCode ⚡ - Built For Better",
+  title: "FlashCode ⚡ - Smart minds. Fast answers. Zero judgment",
   description:
     "A platform for students, faculty, and alumni to share knowledge, solve coding problems, and grow together.",
   icons: {
