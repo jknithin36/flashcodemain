@@ -107,7 +107,7 @@ const AnswerForm = ({ questionId, questionTitle, questionContent }: Props) => {
           <div className="flex justify-end">
             <Button
               type="submit"
-              className="primary-gradient2 text-white font-semibold w-fit"
+              className="primary-gradient2 text-white dark:text-white font-semibold w-fit"
             >
               {isAnswering ? (
                 <>
