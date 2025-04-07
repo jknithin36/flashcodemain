@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import User from "@/database/user.model";
 import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/lib/mongoose"; // ✅ ensure this is present
 
 export async function GET(req: NextRequest) {
   const session = await auth();
@@ -9,8 +10,14 @@ export async function GET(req: NextRequest) {
   if (!session?.user?.id)
     return NextResponse.json({ success: false, error: "Not authenticated" });
 
-  const user = await User.findById(session.user.id);
-  return NextResponse.json({ success: true, data: user });
+  try {
+    await dbConnect(); // ✅ ensure MongoDB is connected
+    const user = await User.findById(session.user.id);
+    return NextResponse.json({ success: true, data: user });
+  } catch (err) {
+    console.error("❌ DB fetch error in /api/profile:", err);
+    return NextResponse.json({ success: false, error: "Database error" });
+  }
 }
 
 export async function PATCH(req: NextRequest) {
@@ -19,13 +26,18 @@ export async function PATCH(req: NextRequest) {
   if (!session?.user?.id)
     return NextResponse.json({ success: false, error: "Not authenticated" });
 
-  const body = await req.json();
+  try {
+    await dbConnect(); // ✅ make sure it's added here too
+    const body = await req.json();
+    const updated = await User.findByIdAndUpdate(
+      session.user.id,
+      { ...body },
+      { new: true }
+    );
 
-  const updated = await User.findByIdAndUpdate(
-    session.user.id,
-    { ...body },
-    { new: true }
-  );
-
-  return NextResponse.json({ success: true, data: updated });
+    return NextResponse.json({ success: true, data: updated });
+  } catch (err) {
+    console.error("❌ DB update error in /api/profile:", err);
+    return NextResponse.json({ success: false, error: "Update failed" });
+  }
 }
