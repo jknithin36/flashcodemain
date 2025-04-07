@@ -248,3 +248,27 @@ export async function getUserTopTags(params: GetUserTagsParams): Promise<
     return handleError(error) as ErrorResponse;
   }
 }
+
+// edit
+
+export async function getLoggedInUser() {
+  try {
+    const res = await fetch("/api/profile", { cache: "no-store" });
+    return await res.json();
+  } catch (err) {
+    return { success: false, error: "Fetch failed" };
+  }
+}
+
+export async function updateUserProfile(profileData: any) {
+  try {
+    const res = await fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(profileData),
+    });
+    return await res.json();
+  } catch (err) {
+    return { success: false, error: "Update failed" };
+  }
+}
