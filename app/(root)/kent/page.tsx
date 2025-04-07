@@ -4,11 +4,11 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-// 1. Type Definitions
+// Updated Type Definition
 type Magazine = {
   name: string;
   link: string;
-  imageUrl: string;
+  image_url: string;
 };
 
 type ImportantDate = {
@@ -23,7 +23,6 @@ type ImportantDates = {
 };
 
 const page = () => {
-  // 2. State Definitions
   const [magazines, setMagazines] = useState<Magazine[]>([]);
   const [selectedTab, setSelectedTab] =
     useState<keyof ImportantDates>("Spring2025");
@@ -33,24 +32,24 @@ const page = () => {
     Fall2025: [],
   });
 
-  // 3. Fetch Magazines
+  const [loadingMagazines, setLoadingMagazines] = useState(true);
+  const [loadingDates, setLoadingDates] = useState(true);
+
   useEffect(() => {
     const fetchMagazines = async () => {
       try {
-        const res = await fetch(
-          "https://serverflash.onrender.com/api/magazines/all"
-        );
+        const res = await fetch("/api/kent?type=magazine");
         const data = await res.json();
         setMagazines(data.magazines || []);
       } catch (err) {
         console.error("Failed to fetch magazines:", err);
+      } finally {
+        setLoadingMagazines(false);
       }
     };
-
     fetchMagazines();
   }, []);
 
-  // 4. Fetch Important Dates
   useEffect(() => {
     const fetchImportantDates = async () => {
       try {
@@ -58,49 +57,42 @@ const page = () => {
           "https://serverflash.onrender.com/api/important-dates/semester-wise"
         );
         const data = await res.json();
-
         const transformed: ImportantDates = {
-          Spring2025: data.spring.map(
-            (item: any): ImportantDate => ({
-              event: item.event,
-              date: new Date(item.date).toLocaleDateString("en-US", {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              }),
-            })
-          ),
-          Summer2025: data.summer.map(
-            (item: any): ImportantDate => ({
-              event: item.event,
-              date: new Date(item.date).toLocaleDateString("en-US", {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              }),
-            })
-          ),
-          Fall2025: data.fall.map(
-            (item: any): ImportantDate => ({
-              event: item.event,
-              date: new Date(item.date).toLocaleDateString("en-US", {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              }),
-            })
-          ),
+          Spring2025: data.spring.map((item: any) => ({
+            event: item.event,
+            date: new Date(item.date).toLocaleDateString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+          })),
+          Summer2025: data.summer.map((item: any) => ({
+            event: item.event,
+            date: new Date(item.date).toLocaleDateString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+          })),
+          Fall2025: data.fall.map((item: any) => ({
+            event: item.event,
+            date: new Date(item.date).toLocaleDateString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+          })),
         };
-
         setImportantDates(transformed);
       } catch (error) {
         console.error("Failed to fetch important dates:", error);
+      } finally {
+        setLoadingDates(false);
       }
     };
-
     fetchImportantDates();
   }, []);
 
@@ -130,66 +122,90 @@ const page = () => {
           <div className="w-32 h-1 bg-blue-900 dark:bg-white"></div>
         </div>
 
-        {/* First Row - 3 Magazines */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {magazines.slice(0, 3).map((mag: Magazine, index: number) => (
-            <a
-              key={index}
-              href={mag.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative w-full flex flex-col items-center text-center transition-transform hover:scale-105"
-            >
-              <div className="relative w-full h-80">
-                <Image
-                  src={mag.imageUrl}
-                  alt={mag.name}
-                  fill
-                  className="object-cover rounded-xl border border-gray-400 dark:border-gray-600"
-                />
-                <span className="absolute top-2 left-2 text-4xl font-extrabold text-yellow-400">
-                  {index + 1}
-                </span>
-              </div>
-              <h3 className="mt-3 text-lg font-semibold text-blue-900 dark:text-yellow-300 font-playfair-display">
-                {mag.name}
-              </h3>
-            </a>
-          ))}
-        </div>
+        {loadingMagazines ? (
+          <p className="text-center text-lg font-medium py-10">
+            Loading magazines...
+          </p>
+        ) : (
+          <>
+            {/* First Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {magazines.slice(0, 3).map((mag, index) => (
+                <a
+                  key={index}
+                  href={mag.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative w-full flex flex-col items-center text-center transition-transform hover:scale-105"
+                >
+                  <div className="relative w-full h-80">
+                    {mag.image_url ? (
+                      <Image
+                        src={mag.image_url}
+                        alt={mag.name}
+                        fill
+                        className="object-cover rounded-xl border border-gray-400 dark:border-gray-600"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl">
+                        <span className="text-gray-500 dark:text-gray-300">
+                          No Image
+                        </span>
+                      </div>
+                    )}
 
-        {/* Second Row - 2 Magazines */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 max-w-4xl mx-auto">
-          {magazines.slice(3, 5).map((mag: Magazine, index: number) => (
-            <a
-              key={index + 3}
-              href={mag.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative w-full flex flex-col items-center text-center transition-transform hover:scale-105"
-            >
-              <div className="relative w-full aspect-[3/4] max-w-[300px] bg-white dark:bg-gray-900 rounded-xl">
-                <Image
-                  src={mag.imageUrl}
-                  alt={mag.name}
-                  fill
-                  className="object-contain rounded-xl border border-gray-400 dark:border-gray-600"
-                />
-                <span className="absolute top-2 left-2 text-4xl font-extrabold text-yellow-400">
-                  {index + 4}
-                </span>
-              </div>
-              <h3 className="mt-3 text-lg font-semibold text-blue-900 dark:text-yellow-300 font-playfair-display">
-                {mag.name}
-              </h3>
-            </a>
-          ))}
-        </div>
+                    <span className="absolute top-2 left-2 text-4xl font-extrabold text-yellow-400">
+                      {index + 1}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-blue-900 dark:text-yellow-300 font-playfair-display">
+                    {mag.name}
+                  </h3>
+                </a>
+              ))}
+            </div>
+
+            {/* Second Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 max-w-4xl mx-auto">
+              {magazines.slice(3, 5).map((mag, index) => (
+                <a
+                  key={index + 3}
+                  href={mag.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative w-full flex flex-col items-center text-center transition-transform hover:scale-105"
+                >
+                  <div className="relative w-full aspect-[3/4] max-w-[300px] bg-white dark:bg-gray-900 rounded-xl">
+                    {mag.image_url ? (
+                      <Image
+                        src={mag.image_url}
+                        alt={mag.name}
+                        fill
+                        className="object-contain rounded-xl border border-gray-400 dark:border-gray-600"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-xl">
+                        <span className="text-gray-500 dark:text-gray-300">
+                          No Image
+                        </span>
+                      </div>
+                    )}
+                    <span className="absolute top-2 left-2 text-4xl font-extrabold text-yellow-400">
+                      {index + 4}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-lg font-semibold text-blue-900 dark:text-yellow-300 font-playfair-display">
+                    {mag.name}
+                  </h3>
+                </a>
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
+      {/* ✅ Official Merchandise Section */}
       <hr className="my-12 border-t border-gray-300 dark:border-gray-700" />
-
-      {/* Merch */}
       <Link
         href="https://kent.spirit.bncollege.com"
         target="_blank"
@@ -239,18 +255,21 @@ const page = () => {
           ))}
         </div>
 
-        {/* Table */}
-        <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-blue-900 text-white">
-                <th className="py-3 px-4 text-left">Event Name</th>
-                <th className="py-3 px-4 text-left">Event Date</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-700 dark:text-gray-300">
-              {importantDates[selectedTab]?.map(
-                (event: ImportantDate, index: number) => (
+        {loadingDates ? (
+          <p className="text-center text-lg font-medium py-10">
+            Loading important dates...
+          </p>
+        ) : (
+          <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-blue-900 text-white">
+                  <th className="py-3 px-4 text-left">Event Name</th>
+                  <th className="py-3 px-4 text-left">Event Date</th>
+                </tr>
+              </thead>
+              <tbody className="text-gray-700 dark:text-gray-300">
+                {importantDates[selectedTab]?.map((event, index) => (
                   <tr
                     key={index}
                     className={
@@ -262,11 +281,11 @@ const page = () => {
                     <td className="py-3 px-4">{event.event}</td>
                     <td className="py-3 px-4">{event.date}</td>
                   </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <h1 className="mt-9 text-center">More Later.....</h1>
