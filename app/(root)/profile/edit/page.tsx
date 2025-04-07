@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { getLoggedInUser, updateUserProfile } from "@/lib/actions/user.action";
+import { getLoggedInUser, updateUserProfile } from "@/lib/client/userClient";
 
 const EditProfilePage = () => {
   const router = useRouter();
@@ -21,7 +21,7 @@ const EditProfilePage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const res = await getLoggedInUser();
-      console.log("🧠 Profile fetch result:", res); // Debug log
+      console.log("🧠 User fetched:", res);
 
       if (res?.success && res.data) {
         setUserData({
@@ -32,7 +32,7 @@ const EditProfilePage = () => {
           portfolio: res.data.portfolio || "",
         });
       } else {
-        console.error("⚠️ Could not load profile:", res?.error);
+        console.error("⚠️ Could not load user profile:", res?.error);
       }
 
       setLoading(false);
