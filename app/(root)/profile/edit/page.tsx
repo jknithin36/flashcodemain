@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,8 @@ const EditProfilePage = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const res = await getLoggedInUser();
+      console.log("🧠 Profile fetch result:", res); // Debug log
+
       if (res?.success && res.data) {
         setUserData({
           name: res.data.name || "",
@@ -28,7 +31,10 @@ const EditProfilePage = () => {
           location: res.data.location || "",
           portfolio: res.data.portfolio || "",
         });
+      } else {
+        console.error("⚠️ Could not load profile:", res?.error);
       }
+
       setLoading(false);
     };
 
@@ -45,10 +51,11 @@ const EditProfilePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const res = await updateUserProfile(userData);
+
     if (res?.success) {
       router.push(`/profile/${res.data._id}`);
     } else {
-      alert("Update failed");
+      alert("❌ Update failed: " + res?.error);
     }
   };
 
