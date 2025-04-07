@@ -76,10 +76,10 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             {Array.from({ length: 6 }).map((_, idx) => (
               <Image
                 key={idx}
-                src={`https://i.pravatar.cc/40?img=${idx + 1}`}
+                src={`/images/user-${idx + 1}.jpg`} // Make sure these are placed in public/images/
                 width={40}
                 height={40}
-                alt="user"
+                alt={`user-${idx + 1}`}
                 className="rounded-full border-2 border-neutral-800"
               />
             ))}
