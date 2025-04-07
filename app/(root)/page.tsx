@@ -87,10 +87,10 @@ export default async function Home({ searchParams }: SearchParams) {
               About
             </Link>
             <Link
-              href="/support"
+              href="/events"
               className="text-gray-600 dark:text-gray-400 hover:text-primary"
             >
-              Support
+              Events
             </Link>
             <Link
               href={ROUTES.JOBS}

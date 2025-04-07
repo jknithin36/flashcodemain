@@ -24,6 +24,16 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "media2.dev.to",
+        port: "",
+      },
+      {
+        protocol: "https",
+        hostname: "dev.to",
+        port: "",
+      },
     ],
   },
 };
