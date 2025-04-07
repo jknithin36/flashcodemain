@@ -28,7 +28,9 @@ const Navbar = async () => {
           </span>
         </p>
       </Link>
-      <GlobalSearch />
+      <div className="hidden sm:block w-full max-w-md">
+        <GlobalSearch />
+      </div>
       <div className="flex-between gap-5">
         <Theme />
         {session?.user?.id && (
