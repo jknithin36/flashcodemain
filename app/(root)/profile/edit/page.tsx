@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { getLoggedInUser, updateUserProfile } from "@/lib/actions/user.action";
 
 const EditProfilePage = () => {
@@ -19,14 +19,14 @@ const EditProfilePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { success, data } = await getLoggedInUser(); // must return logged-in user data
-      if (success && data) {
+      const res = await getLoggedInUser();
+      if (res?.success && res.data) {
         setUserData({
-          name: data.name || "",
-          username: data.username || "",
-          bio: data.bio || "",
-          location: data.location || "",
-          portfolio: data.portfolio || "",
+          name: res.data.name || "",
+          username: res.data.username || "",
+          bio: res.data.bio || "",
+          location: res.data.location || "",
+          portfolio: res.data.portfolio || "",
         });
       }
       setLoading(false);
@@ -46,9 +46,9 @@ const EditProfilePage = () => {
     e.preventDefault();
     const res = await updateUserProfile(userData);
     if (res?.success) {
-      router.push(`/profile/${res.data._id}`); // Redirect to updated profile
+      router.push(`/profile/${res.data._id}`);
     } else {
-      alert("Update failed!");
+      alert("Update failed");
     }
   };
 
@@ -56,39 +56,37 @@ const EditProfilePage = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-10 px-6">
-      <h2 className="text-3xl font-bold mb-6">Edit Your Profile</h2>
+      <h2 className="text-3xl font-bold mb-6 text-white">Edit Your Profile</h2>
       <form className="space-y-6" onSubmit={handleSubmit}>
         <Input
           name="name"
           value={userData.name}
           onChange={handleChange}
-          placeholder="Name"
-          required
+          placeholder="We don't have any info about your name"
         />
         <Input
           name="username"
           value={userData.username}
           onChange={handleChange}
-          placeholder="Username"
-          required
+          placeholder="We don't have any info about your username"
         />
         <Textarea
           name="bio"
           value={userData.bio}
           onChange={handleChange}
-          placeholder="Bio"
+          placeholder="We don't have any info about your bio"
         />
         <Input
           name="location"
           value={userData.location}
           onChange={handleChange}
-          placeholder="Location"
+          placeholder="We don't have any info about your location"
         />
         <Input
           name="portfolio"
           value={userData.portfolio}
           onChange={handleChange}
-          placeholder="Portfolio link"
+          placeholder="We don't have any info about your portfolio"
         />
         <Button type="submit">Save Changes</Button>
       </form>
