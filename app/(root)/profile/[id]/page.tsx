@@ -269,25 +269,35 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
   }
 
   const { user, totalQuestions, totalAnswers } = data!;
-  const { questions, isNext: hasMoreQuestions } =
-    (
-      await getUserQuestions({
-        userId: id,
-        page: Number(page) || 1,
-        pageSize: Number(pageSize) || 10,
-      })
-    )?.data || {};
+  const {
+    data: userQuestions,
+    success: userQuestionsSuccess,
+    error: userQuestionsError,
+  } = await getUserQuestions({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
 
-  const { answers, isNext: hasMoreAnswers } =
-    (
-      await getUsersAnswers({
-        userId: id,
-        page: Number(page) || 1,
-        pageSize: Number(pageSize) || 10,
-      })
-    )?.data || {};
+  const {
+    data: userAnswers,
+    success: userAnswersSuccess,
+    error: userAnswersError,
+  } = await getUsersAnswers({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
 
-  const { tags } = (await getUserTopTags({ userId: id }))?.data || {};
+  const {
+    data: userTopTags,
+    success: userTopTagsSuccess,
+    error: userTopTagsError,
+  } = await getUserTopTags({ userId: id });
+
+  const { questions, isNext: hasMoreQuestions } = userQuestions!;
+  const { answers, isNext: hasMoreAnswers } = userAnswers!;
+  const { tags } = userTopTags!;
 
   const { _id, name, image, portfolio, location, createdAt, username, bio } =
     user;
@@ -379,8 +389,8 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
             <DataRenderer
               data={questions}
               empty={EMPTY_QUESTION}
-              success
-              error={null}
+              success={userQuestionsSuccess}
+              error={userQuestionsError ?? undefined}
               render={(questions) => (
                 <div className="flex w-full flex-col gap-6">
                   {questions.map((question) => (
@@ -397,8 +407,8 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
             <DataRenderer
               data={answers}
               empty={EMPTY_ANSWERS}
-              success
-              error={null}
+              success={userAnswersSuccess}
+              error={userAnswersError ?? undefined}
               render={(answers) => (
                 <div className="flex w-full flex-col gap-6">
                   {answers.map((answer) => (
@@ -424,8 +434,8 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
             <DataRenderer
               data={tags}
               empty={EMPTY_TAGS}
-              success
-              error={null}
+              success={userTopTagsSuccess}
+              error={userTopTagsError ?? undefined}
               render={() => (
                 <div className="mt-3 flex w-full flex-col gap-4">
                   {tags.map((tag) => (
