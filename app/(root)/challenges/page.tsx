@@ -4,222 +4,7 @@ import { useEffect, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { Play, Shuffle } from "lucide-react";
-
-// Define the challenge type
-type Challenge = {
-  title: string;
-  description: string;
-};
-
-// 50 challenge objects
-const challenges: Challenge[] = [
-  {
-    title: "Reverse a string",
-    description: "Write a function to reverse a string.",
-  },
-  {
-    title: "Check for palindrome",
-    description: "Write a function to check if a string is a palindrome.",
-  },
-  {
-    title: "Sum of digits",
-    description: "Write a function to calculate the sum of digits of a number.",
-  },
-  {
-    title: "Find factorial",
-    description: "Write a function to find the factorial of a number.",
-  },
-  {
-    title: "Fibonacci number",
-    description: "Write a function to return the Nth Fibonacci number.",
-  },
-  {
-    title: "Prime check",
-    description: "Write a function to check if a number is prime.",
-  },
-  {
-    title: "Find max in array",
-    description: "Write a function to find the maximum number in an array.",
-  },
-  {
-    title: "Remove duplicates",
-    description: "Write a function to remove duplicates from an array.",
-  },
-  {
-    title: "Count vowels",
-    description: "Write a function to count vowels in a string.",
-  },
-  {
-    title: "String compression",
-    description: "Write a function to compress a string (e.g. aabcc → a2b1c2).",
-  },
-  {
-    title: "Binary to decimal",
-    description: "Write a function to convert binary to decimal.",
-  },
-  {
-    title: "Decimal to binary",
-    description: "Write a function to convert decimal to binary.",
-  },
-  {
-    title: "Anagram check",
-    description: "Write a function to check if two strings are anagrams.",
-  },
-  {
-    title: "Find intersection",
-    description: "Write a function to find the intersection of two arrays.",
-  },
-  {
-    title: "Merge sorted arrays",
-    description: "Write a function to merge two sorted arrays.",
-  },
-  {
-    title: "Rotate array",
-    description: "Write a function to rotate an array by K steps.",
-  },
-  {
-    title: "Flatten array",
-    description: "Write a function to flatten a nested array.",
-  },
-  {
-    title: "Matrix transpose",
-    description: "Write a function to transpose a matrix.",
-  },
-  {
-    title: "Check balanced parentheses",
-    description: "Write a function to check for balanced parentheses.",
-  },
-  {
-    title: "Capitalize words",
-    description:
-      "Write a function to capitalize the first letter of each word.",
-  },
-  {
-    title: "Deep clone object",
-    description: "Write a function to deep clone a JavaScript object.",
-  },
-  {
-    title: "Find longest word",
-    description: "Write a function to find the longest word in a sentence.",
-  },
-  {
-    title: "Check power of 2",
-    description: "Write a function to check if a number is a power of 2.",
-  },
-  {
-    title: "GCD of two numbers",
-    description: "Write a function to find the GCD of two numbers.",
-  },
-  {
-    title: "LCM of two numbers",
-    description: "Write a function to find the LCM of two numbers.",
-  },
-  {
-    title: "Remove falsy values",
-    description: "Write a function to remove falsy values from an array.",
-  },
-  {
-    title: "Get unique values",
-    description: "Write a function to return unique values from an array.",
-  },
-  {
-    title: "Group by key",
-    description: "Write a function to group an array of objects by key.",
-  },
-  {
-    title: "Sum of nested array",
-    description: "Write a function to sum all numbers in a nested array.",
-  },
-  {
-    title: "Reverse number",
-    description: "Write a function to reverse a number.",
-  },
-  {
-    title: "Check Armstrong number",
-    description:
-      "Write a function to check if a number is an Armstrong number.",
-  },
-  {
-    title: "Check leap year",
-    description: "Write a function to check if a year is a leap year.",
-  },
-  {
-    title: "Count words in string",
-    description: "Write a function to count words in a string.",
-  },
-  {
-    title: "Shuffle array",
-    description: "Write a function to shuffle elements in an array.",
-  },
-  {
-    title: "Sort by frequency",
-    description: "Write a function to sort elements by frequency.",
-  },
-  {
-    title: "Convert case",
-    description:
-      "Write a function to convert uppercase to lowercase and vice versa.",
-  },
-  {
-    title: "Check isomorphic strings",
-    description: "Write a function to check if two strings are isomorphic.",
-  },
-  {
-    title: "Find missing number",
-    description: "Write a function to find the missing number in an array.",
-  },
-  {
-    title: "Sum of even numbers",
-    description: "Write a function to sum all even numbers in an array.",
-  },
-  {
-    title: "Detect cycle in list",
-    description: "Write a function to detect a cycle in a linked list.",
-  },
-  {
-    title: "Linked list reversal",
-    description: "Write a function to reverse a linked list.",
-  },
-  {
-    title: "Find median",
-    description: "Write a function to find the median of an array.",
-  },
-  {
-    title: "Palindrome number",
-    description: "Write a function to check if a number is a palindrome.",
-  },
-  {
-    title: "Subarray sum",
-    description:
-      "Write a function to check if a subarray with given sum exists.",
-  },
-  {
-    title: "Validate brackets",
-    description:
-      "Write a function to validate if brackets are properly closed.",
-  },
-  {
-    title: "Sum of squares",
-    description: "Write a function to return the sum of squares of numbers.",
-  },
-  {
-    title: "Flatten nested object",
-    description: "Write a function to flatten a deeply nested object.",
-  },
-  {
-    title: "Check string rotation",
-    description:
-      "Write a function to check if one string is a rotation of another.",
-  },
-  {
-    title: "Check pangram",
-    description: "Write a function to check if a sentence is a pangram.",
-  },
-  {
-    title: "Zip two arrays",
-    description: "Write a function to zip two arrays into one.",
-  },
-];
+import { challenges, Challenge } from "@/constants/challenges";
 
 export default function DailyChallengePage() {
   const [code, setCode] = useState<string>("");
@@ -227,6 +12,8 @@ export default function DailyChallengePage() {
   const [currentChallenge, setCurrentChallenge] = useState<Challenge | null>(
     null
   );
+  const [showModal, setShowModal] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     const random = Math.floor(Math.random() * challenges.length);
@@ -241,13 +28,23 @@ export default function DailyChallengePage() {
       };
       const codeToRun = `(function(console){ ${code} })(customConsole);`;
       new Function("customConsole", codeToRun)(customConsole);
-      setOutput(logs.join("\n"));
+      const result = logs.join("\n").trim();
+      setOutput(result);
+
+      if (result === currentChallenge?.expectedOutput.trim()) {
+        setIsSuccess(true);
+      } else {
+        setIsSuccess(false);
+      }
+      setShowModal(true);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setOutput(` Error: ${err.message}`);
+        setOutput(`Error: ${err.message}`);
       } else {
-        setOutput(" Unknown error occurred.");
+        setOutput("Unknown error occurred.");
       }
+      setIsSuccess(false);
+      setShowModal(true);
     }
   };
 
@@ -259,6 +56,19 @@ export default function DailyChallengePage() {
     setCurrentChallenge(newChallenge);
     setCode("");
     setOutput("");
+  };
+
+  const getTagColor = (tag: string) => {
+    switch (tag.toLowerCase()) {
+      case "easy":
+        return "bg-green-100 text-green-700 border border-green-400";
+      case "medium":
+        return "bg-orange-100 text-orange-700 border border-orange-400";
+      case "hard":
+        return "bg-red-100 text-red-700 border border-red-400";
+      default:
+        return "bg-gray-100 text-gray-700 border border-gray-300";
+    }
   };
 
   if (!currentChallenge) {
@@ -282,10 +92,26 @@ export default function DailyChallengePage() {
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm p-5 mb-6">
-        <h2 className="text-lg font-medium mb-2">{currentChallenge.title}</h2>
-        <p className="text-sm text-muted-foreground">
-          {currentChallenge.description}
-        </p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-lg font-medium mb-2">
+              {currentChallenge.title}
+            </h2>
+            <p className="text-sm text-muted-foreground mb-1">
+              {currentChallenge.description}
+            </p>
+            <p className="text-xs text-muted-foreground italic">
+              Expected output: <code>{currentChallenge.expectedOutput}</code>
+            </p>
+          </div>
+          <span
+            className={`text-xs font-semibold px-2 py-1 rounded-md self-start ${getTagColor(
+              currentChallenge.tag
+            )}`}
+          >
+            {currentChallenge.tag.toUpperCase()}
+          </span>
+        </div>
       </div>
 
       <div className="bg-card border border-border rounded-xl shadow-sm p-5 mb-6">
@@ -336,6 +162,31 @@ export default function DailyChallengePage() {
         </a>
         .
       </p>
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300">
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-2xl max-w-md w-full text-center border border-blue-300 animate-fadeInUp">
+            <div className="text-5xl mb-4">{isSuccess ? "🦅" : "✨"}</div>
+
+            <h2 className="text-2xl font-bold mb-2 text-blue-700 dark:text-blue-400">
+              {isSuccess ? "Flash-tastic! 💙💛" : "Almost there, Flash! 💪"}
+            </h2>
+
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {isSuccess
+                ? "You crushed it! Keep soaring, Golden Flash! 🚀"
+                : "You're just one step away. Keep going and you'll shine! 💛"}
+            </p>
+
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-6 inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-lg shadow transition"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
