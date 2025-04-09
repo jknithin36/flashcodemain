@@ -24,7 +24,7 @@ export default function CodingChallenges() {
       {/* CTA Button */}
       <div className="mt-4">
         <Link
-          href="/challenges/daily"
+          href="/challenges"
           className="inline-block text-white bg-gradient-to-r from-blue-500 to-blue-700 dark:from-blue-600 dark:to-blue-800 px-4 py-2 rounded-md font-semibold text-sm transition-all duration-300 hover:brightness-110 "
         >
           Try Now →
