@@ -66,7 +66,7 @@ export default function QuestionCard({
           isAuthor
           titleStyles="max-sm:hidden"
         /> */}
-        {author && author.image ? (
+        {author ? (
           <Metric
             imgUrl={author.image}
             alt={author.name}
@@ -78,7 +78,7 @@ export default function QuestionCard({
             titleStyles="max-sm:hidden"
           />
         ) : (
-          <span>Loading...</span> // or fallback UI
+          <span>Loading...</span> 
         )}
 
         <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
