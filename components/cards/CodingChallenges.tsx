@@ -15,10 +15,18 @@ export default function CodingChallenges() {
       </div>
 
       {/* Challenge Statement */}
-      <div className="mt-3 bg-gray-100 dark:bg-gray-800 p-3 rounded-md text-sm text-gray-700 dark:text-gray-300 font-mono">
-        <Code2Icon className="inline-block mr-2 text-gray-600 dark:text-gray-400" />
-        <span className="font-medium">Problem:</span> Reverse a string
-        **without** using `.reverse()` in JavaScript.
+      <div className="mt-4 px-4 py-3 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 rounded-md border border-dashed border-blue-300 dark:border-blue-700 shadow-inner">
+        <div className="flex items-start gap-2">
+          <Code2Icon className="mt-1 text-blue-500 dark:text-blue-300" />
+          <p className="text-sm text-gray-800 dark:text-gray-200 font-semibold leading-snug">
+            Flash up your logic,{" "}
+            <span className="text-blue-600 dark:text-blue-300">
+              Golden Flash
+            </span>
+            ! <br />
+            Today’s challenge is just one click away ⚡
+          </p>
+        </div>
       </div>
 
       {/* CTA Button */}
