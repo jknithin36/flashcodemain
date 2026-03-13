@@ -104,19 +104,21 @@ export default async function Home({ searchParams }: SearchParams) {
             >
               Insights & Stories
             </Link>
-<Link
-  href="/" {/* https://x.com/x414423 */}
-  target="_blank"
-  className="text-gray-600 dark:text-gray-400 hover:text-primary"
->
-  X (Twitter)
-</Link>
-<Link
-  href="/" {/* https://www.linkedin.com/in/jknithin/ */}
-  className="text-gray-600 dark:text-gray-400 hover:text-primary"
->
-  Contact (Linked In)
-</Link>
+            {/* TODO: replace href with https://x.com/x414423 */}
+            <Link
+              href="/"
+              target="_blank"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary"
+            >
+              X (Twitter)
+            </Link>
+            {/* TODO: replace href with https://www.linkedin.com/in/jknithin/ */}
+            <Link
+              href="/"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary"
+            >
+              Contact (Linked In)
+            </Link>
           </div>
 
           {/* Copyright Text */}
