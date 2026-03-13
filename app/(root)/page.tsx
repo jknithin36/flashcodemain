@@ -105,14 +105,16 @@ export default async function Home({ searchParams }: SearchParams) {
               Insights & Stories
             </Link>
             <Link
-              href="https://x.com/x414423"
+              {/* href="https://x.com/x414423" */}
+              href="/"
               target="_blank"
               className="text-gray-600 dark:text-gray-400 hover:text-primary"
             >
               X (Twitter)
             </Link>
             <Link
-              href="https://www.linkedin.com/in/jknithin/"
+              {/* href="https://www.linkedin.com/in/jknithin/" */}
+                          href="/" 
               className="text-gray-600 dark:text-gray-400 hover:text-primary"
             >
               Contact (Linked In)
